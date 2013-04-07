@@ -34,12 +34,11 @@ app.get('/', function(req, res) {
 
 /* WORLD SIMULATION */
 
-var sids = new Array();
 var players = {};
 var world = {
     TIME_STEP: 16,
-    WORLD_W: 300,
-    WORLD_H: 300,
+    WORLD_W: 400,
+    WORLD_H: 400,
     TILT_X: 0,
     TILT_Y: 0,
     BALL_RADIUS: 10,
@@ -53,6 +52,18 @@ var physics = {
     restitution: 0.6
 };
 
+function resetWorld() {
+    for (var key in players) {
+        players[key].alive = true;
+        players[key].x = 0;
+        players[key].y = 0;
+        players[key].z = world.BALL_RADIUS;
+        players[key].vx = 0;
+        players[key].vy = 0;
+        players[key].vz = 0;
+    }
+}
+
 function acceleration(state, t) {
     // should actually be a force, but there is no mass
     var ax = 0, ay = 0, az = 0;
@@ -61,8 +72,7 @@ function acceleration(state, t) {
     ax += physics.tilt_acceleration * world.TILT_X;
     ay -= physics.tilt_acceleration * world.TILT_Y;
 
-    if (state.x < -200 - world.BALL_RADIUS || state.x > 200 + world.BALL_RADIUS 
-        || state.y < -200 - world.BALL_RADIUS || state.y > 200 + world.BALL_RADIUS )
+    if (!state.alive)
         az -= physics.fall_acceleration;
 
     if ( (control.right ? !control.left : control.left) && 
@@ -90,6 +100,7 @@ function acceleration(state, t) {
 
 function evaluate(initial, t, dt, d) {
     var state = {
+        alive: initial.alive,
         x: initial.x + d.dx * dt,
         y: initial.y + d.dy * dt,
         z: initial.z + d.dz * dt,
@@ -147,8 +158,13 @@ function move(ball)
 }
 
 function step() {
-    for (var i in sids) {
-        move(players[sids[i]]);
+    for (var key in players) {
+        move(players[key]);
+        if (players[key].x < -world.WORLD_W/2 - world.BALL_RADIUS
+            || players[key].x > world.WORLD_W/2 + world.BALL_RADIUS
+            || players[key].y < -world.WORLD_H/2 - world.BALL_RADIUS
+            || players[key].y > world.WORLD_H/2 + world.BALL_RADIUS)
+            players[key].alive = false;
     }
     io.sockets.emit('step', players);
 }
@@ -162,6 +178,7 @@ io.sockets.on('connection', function(socket) {
     console.log(socket.id + ' connected!');
     players[socket.id] = {
         id: socket.id,
+        alive: false,
         x: 0,
         y: 0,
         z: world.BALL_RADIUS,
@@ -175,13 +192,17 @@ io.sockets.on('connection', function(socket) {
             down: false,
         }
     };
-    sids.push(socket.id);
 
     socket.on('tilt', function(data) {
-        world.TILT_X = (data.x - .5) / 2;
-        world.TILT_Y = (data.y - .5) / 2;
+        delete players[socket.id];
+        world.TILT_X = (data.x - .5) * 2;
+        world.TILT_Y = (data.y - .5) * 2;
         io.sockets.emit('world', world);
-    })
+    });
+    socket.on('reset', function() {
+        console.log('Resetting world...');
+        resetWorld();
+    });
 
     socket.on('keydown', function(data) {
         players[socket.id].keyDown[data.key] = true;
@@ -191,10 +212,6 @@ io.sockets.on('connection', function(socket) {
     });
     socket.on('disconnect', function() {
         console.log(socket.id + ' disconnected!');
-        var id = sids.indexOf(socket.id);
-        if (id != -1) {
-            sids.splice(sids.indexOf(id),1);
-            delete players[socket.id];
-        }
+        delete players[socket.id];
     })
 });
