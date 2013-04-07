@@ -39,6 +39,7 @@ var world = {
     TIME_STEP: 16,
     WORLD_W: 400,
     WORLD_H: 400,
+    DEAD_ZONE_Z: -9999,
     TILT_X: 0,
     TILT_Y: 0,
     BALL_RADIUS: 10,
@@ -158,6 +159,7 @@ function move(ball)
 }
 
 function step() {
+    var reset = true;
     for (var key in players) {
         move(players[key]);
         if (players[key].x < -world.WORLD_W/2 - world.BALL_RADIUS
@@ -165,7 +167,12 @@ function step() {
             || players[key].y < -world.WORLD_H/2 - world.BALL_RADIUS
             || players[key].y > world.WORLD_H/2 + world.BALL_RADIUS)
             players[key].alive = false;
+
+        if (players[key].alive)
+            reset = false;
     }
+    if (reset)
+        resetWorld();
     io.sockets.emit('step', players);
 }
 
@@ -181,7 +188,7 @@ io.sockets.on('connection', function(socket) {
         alive: false,
         x: 0,
         y: 0,
-        z: world.BALL_RADIUS,
+        z: world.DEAD_ZONE_Z,
         vx: 0,
         vy: 0,
         vz: 0,
