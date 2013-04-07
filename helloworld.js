@@ -1,4 +1,5 @@
-var express = require('express');
+var express = require('express'),
+    five = require('johnny-five');
 
 var sys = require('sys'),
     app = express(),
@@ -7,6 +8,11 @@ var sys = require('sys'),
     sio = require('socket.io'),
     fs = require('fs'),
     json = JSON.stringify;
+
+var controller = {};
+var input = {
+    greenPressed: false
+};
 
 
 server.listen(8080);
@@ -31,15 +37,27 @@ io.sockets.on('connection', function(socket) {
 });
 
 
-var serialport = require("serialport");
-var SerialPort = serialport.SerialPort
-var sp = new SerialPort("/dev/tty.usbmodemfd121", {
-    parser: serialport.parsers.readline("\n") 
-}); // this is the openImmediately flag [default is true]
+var board = new five.Board();
 
-sp.open(function () {
-    console.log('Serial port opened!');
-    sp.on('data', function(data) {
-        io.sockets.send(json({ analog: parseInt(data) }));
-    });  
-});
+board.on('ready', function() {
+    console.log('Connected to arduino!');
+    var joystick = new five.Joystick({
+        pins: ['A0', 'A1'],
+        freq: 100
+    });
+    var greenButton = new five.Button(12);
+    var whiteButton = new five.Button(13);
+    //this.digitalWrite(8, 1);
+
+    joystick.on('axismove', function( err, timestamp ) {
+        console.log( "LR:", this.fixed.x );
+        console.log( "UD:", this.fixed.y );
+    });
+
+    greenButton.on('up', function() {
+        console.log("Green button pressed!");
+    })
+    whiteButton.on('up', function() {
+        console.log("White button pressed!");
+    })
+})
