@@ -162,10 +162,11 @@ function step() {
     var reset = true;
     for (var key in players) {
         move(players[key]);
-        if (players[key].x < -world.WORLD_W/2 - world.BALL_RADIUS
+        if (players[key].alive && (
+            players[key].x < -world.WORLD_W/2 - world.BALL_RADIUS
             || players[key].x > world.WORLD_W/2 + world.BALL_RADIUS
             || players[key].y < -world.WORLD_H/2 - world.BALL_RADIUS
-            || players[key].y > world.WORLD_H/2 + world.BALL_RADIUS) {
+            || players[key].y > world.WORLD_H/2 + world.BALL_RADIUS)) {
                 
             players[key].alive = false;
             io.sockets.emit('death');
