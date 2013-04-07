@@ -161,7 +161,7 @@ function step() {
     for (var key in players) {
         move(players[key]);
         if (players[key].x < -world.WORLD_W/2 - world.BALL_RADIUS
-            || players[key].x / 2 > world.WORLD_W/2 + world.BALL_RADIUS
+            || players[key].x > world.WORLD_W/2 + world.BALL_RADIUS
             || players[key].y < -world.WORLD_H/2 - world.BALL_RADIUS
             || players[key].y > world.WORLD_H/2 + world.BALL_RADIUS)
             players[key].alive = false;
