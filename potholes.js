@@ -1,5 +1,4 @@
-var express = require('express'),
-    five = require('johnny-five');
+var express = require('express');
 
 var sys = require('sys'),
     app = express(),
@@ -160,6 +159,12 @@ io.sockets.on('connection', function(socket) {
     };
     sids.push(socket.id);
 
+    socket.on('tilt', function(data) {
+        world.TILT_X = (data.x - .5) / 2;
+        world.TILT_Y = (data.y - .5) / 2;
+        io.sockets.emit('world', world);
+    })
+
     socket.on('keydown', function(data) {
         console.log(socket.id + ' key down!');
         players[socket.id].keyDown[data.key] = true;
@@ -178,38 +183,3 @@ io.sockets.on('connection', function(socket) {
 });
 
 
-/* ARDUINO INPUT HANDLERS */
-
-var board = new five.Board();
-
-board.on('ready', function() {
-    var self = this;
-    console.log('Connected to arduino!');
-    var joystick = new five.Joystick({
-        pins: ['A0', 'A1'],
-        freq: 50
-    });
-    var greenButton = new five.Button(12);
-    var whiteButton = new five.Button(13);
-    var joystickButton = new five.Button(7);
-    var rumble = 9;
-
-    joystick.on('axismove', function( err, timestamp ) {
-        world.TILT_X = (this.fixed.x - .5) / 2;
-        world.TILT_Y = (this.fixed.y - .5) / 2;
-        io.sockets.emit('world', world);
-    });
-    joystickButton.on('up', function() {
-        self.firmata.digitalWrite(rumble, self.firmata.HIGH);
-    });
-    joystickButton.on('down', function() {
-        self.firmata.digitalWrite(rumble, self.firmata.LOW);
-    });
-
-    greenButton.on('up', function() {
-        console.log("Green button pressed!");
-    });
-    whiteButton.on('up', function() {
-        console.log("White button pressed!");
-    });
-});

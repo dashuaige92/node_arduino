@@ -5,12 +5,12 @@
     "express": "3.x",
     "johnny-five": "*"
   },
-  "subdomain": "helloworld",
+  "subdomain": "pawns",
   "scripts": {
-    "start": "helloworld.js"
+    "start": "pawns.js"
   },
   "engines": {
     "node": "0.6.x"
   },
-  "name": "helloworld"
+  "name": "pawns"
 }
