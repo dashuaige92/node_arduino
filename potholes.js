@@ -36,7 +36,7 @@ app.get('/', function(req, res) {
 /* WORLD SIMULATION */
 
 var sids = new Array();
-var players = new Array();
+var players = {};
 var world = {
     TIME_STEP: 50,
     WORLD_W: 300,
@@ -145,20 +145,19 @@ setInterval(step, world.TIME_STEP);
 /* SOCKET.IO CONNECTION HANDLERS */
 
 io.sockets.on('connection', function(socket) {
-    socket.on('connect', function() {
-        players[socket.id] = {
-            x: 0,
-            y: 0,
-            vx: 0,
-            vy: 0,
-            keyDown: {
-                right: false,
-                left: false,
-                up: false,
-                down: false,
-            }
-        };
-    });
+    console.log(socket.id + ' connected!');
+    players[socket.id] = {
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        keyDown: {
+            right: false,
+            left: false,
+            up: false,
+            down: false,
+        }
+    };
 
     socket.on('keydown', function(data) {
         players[socket.id].keyDown[data.key] = true;
