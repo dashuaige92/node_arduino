@@ -187,8 +187,8 @@ io.sockets.on('connection', function(socket) {
     sids.push(socket.id);
 
     socket.on('tilt', function(data) {
-        world.TILT_X = (data.x - .5) / 2;
-        world.TILT_Y = (data.y - .5) / 2;
+        world.TILT_X = (data.x - .5) * 2;
+        world.TILT_Y = (data.y - .5) * 2;
         io.sockets.emit('world', world);
     });
     socket.on('reset', function() {
