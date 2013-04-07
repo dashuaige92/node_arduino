@@ -39,6 +39,8 @@ function init(name) {
 
 $(document).ready(function() {
     init();
+    renderInit();
+    renderer.render(scene, camera);
     animate(0);
 
     $(document).keydown(onKeyDown);

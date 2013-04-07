@@ -47,8 +47,8 @@ var world = {
     HOLE_RADIUS: 5,
 };
 var physics = {
-    tilt_acceleration: 20 * (world.TIME_STEP/1000),
-    acceleration: 50 * (world.TIME_STEP/1000),
+    tilt_acceleration: 100 * (world.TIME_STEP/1000),
+    acceleration: 120 * (world.TIME_STEP/1000),
     friction: 5 * (world.TIME_STEP/1000),
     restitution: 0.6
 };
@@ -59,7 +59,7 @@ function acceleration(state, t) {
     var control = state.keyDown;
 
     ax += physics.tilt_acceleration * world.TILT_X;
-    ay += physics.tilt_acceleration * world.TILT_Y;
+    ay -= physics.tilt_acceleration * world.TILT_Y;
 
     if ( (control.right ? !control.left : control.left) && 
         (control.up ? !control.down : control.down)) {
