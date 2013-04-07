@@ -19,3 +19,14 @@ html, body {
 	margin-top: 16pt;
 	font-size: 44pt;
 }
+
+#author {
+	font-family: Sanchez, serif;
+	margin-right: 8pt;
+	margin-bottom: 8pt;
+	font-size: 24pt;
+
+	position: absolute; 
+	left: 1%;
+	bottom: 0%;
+}
