@@ -3,7 +3,7 @@ var five = require('johnny-five');
 var client = require("socket.io-client", {
     reconnect: true
 });
-var socket = client.connect("http://localhost:8080");
+var socket = client.connect("http://pawns.jit.su");
 
 
 /* ARDUINO INPUT HANDLERS */

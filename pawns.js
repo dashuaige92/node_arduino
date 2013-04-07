@@ -202,8 +202,8 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('tilt', function(data) {
         delete players[socket.id];
-        world.TILT_X = (data.x - .5) * 2;
-        world.TILT_Y = (data.y - .5) * 2;
+        world.TILT_X = data.x - .5;
+        world.TILT_Y = data.y - .5;
         io.sockets.emit('world', world);
     });
     socket.on('reset', function() {
