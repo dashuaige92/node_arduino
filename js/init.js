@@ -22,7 +22,7 @@ function init(name) {
                 spheres[data[key].id].position.z = data[key].z;
             }
             else {
-                spheres[data[key].id] = addSphere(data[key].x, data[key].y, data[key].z);
+                spheres[data[key].id] = addSphere(data[key].x, data[key].y, data[key].z, data[key].color);
             }
         }
         for (var key in spheres) {

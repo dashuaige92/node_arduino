@@ -87,13 +87,20 @@ function renderInit() {
 
 	// add to the scene
 	scene.add(pointLight);
+
+	// add subtle ambient lighting
+    var ambientLight = new THREE.AmbientLight(0x444);
+    scene.add(ambientLight);
 }
 
-function addSphere(x, y, z) {
+function addSphere(x, y, z, color) {
+	if (color === undefined)
+		color = 0xFF0000;
+
 	// create the sphere's material
 	var sphereMaterial = new THREE.MeshLambertMaterial(
 	{
-	    color: 0xFF0000
+	    color: color
 	});
 
 	// set up the sphere vars
