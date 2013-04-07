@@ -88,7 +88,7 @@ function renderInit() {
 	scene.add(pointLight);
 }
 
-function addSphere(x, y) {
+function addSphere(x, y, z) {
 	// create the sphere's material
 	var sphereMaterial = new THREE.MeshLambertMaterial(
 	{
@@ -106,7 +106,7 @@ function addSphere(x, y) {
 
 	sphere.position.x = x;
 	sphere.position.y = y;
-	sphere.position.z = 10;
+	sphere.position.z = z;
 
 	// add the sphere to the scene
 	group.add(sphere);

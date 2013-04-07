@@ -19,9 +19,10 @@ function init(name) {
             if (spheres[data[key].id] !== undefined) {
                 spheres[data[key].id].position.x = data[key].x;
                 spheres[data[key].id].position.y = data[key].y;
+                spheres[data[key].id].position.z = data[key].z;
             }
             else {
-                spheres[data[key].id] = addSphere(data[key].x, data[key].y);
+                spheres[data[key].id] = addSphere(data[key].x, data[key].y, data[key].z);
             }
         }
         for (var key in spheres) {

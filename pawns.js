@@ -42,23 +42,28 @@ var world = {
     WORLD_H: 300,
     TILT_X: 0,
     TILT_Y: 0,
-    BALL_RADIUS: 5,
+    BALL_RADIUS: 10,
     HOLE_RADIUS: 5,
 };
 var physics = {
     tilt_acceleration: 100 * (world.TIME_STEP/1000),
     acceleration: 120 * (world.TIME_STEP/1000),
+    fall_acceleration: 100 * (world.TIME_STEP/1000),
     friction: 5 * (world.TIME_STEP/1000),
     restitution: 0.6
 };
 
 function acceleration(state, t) {
     // should actually be a force, but there is no mass
-    var ax = 0, ay = 0;
+    var ax = 0, ay = 0, az = 0;
     var control = state.keyDown;
 
     ax += physics.tilt_acceleration * world.TILT_X;
     ay -= physics.tilt_acceleration * world.TILT_Y;
+
+    if (state.x < -200 - world.BALL_RADIUS || state.x > 200 + world.BALL_RADIUS 
+        || state.y < -200 - world.BALL_RADIUS || state.y > 200 + world.BALL_RADIUS )
+        az -= physics.fall_acceleration;
 
     if ( (control.right ? !control.left : control.left) && 
         (control.up ? !control.down : control.down)) {
@@ -78,7 +83,8 @@ function acceleration(state, t) {
 
     return {
         vx: - Math.pow(world.BALL_RADIUS, .5) * physics.friction * state.vx + ax,
-        vy: - Math.pow(world.BALL_RADIUS, .5) * physics.friction * state.vy + ay
+        vy: - Math.pow(world.BALL_RADIUS, .5) * physics.friction * state.vy + ay,
+        vz: - Math.pow(world.BALL_RADIUS, .5) * physics.friction * state.vz + az
     };
 }
 
@@ -86,8 +92,10 @@ function evaluate(initial, t, dt, d) {
     var state = {
         x: initial.x + d.dx * dt,
         y: initial.y + d.dy * dt,
+        z: initial.z + d.dz * dt,
         vx: initial.vx + d.dvx * dt,
         vy: initial.vy + d.dvy * dt,
+        vz: initial.vz + d.dvz * dt,
         keyDown: initial.keyDown
     };
 
@@ -96,38 +104,46 @@ function evaluate(initial, t, dt, d) {
     return {
         dx: state.vx,
         dy: state.vy,
+        dz: state.vz,
         dvx: a.vx,
-        dvy: a.vy
+        dvy: a.vy,
+        dvz: a.vz
     };
 }
 
 function integrate(state, t, dt) {
-    var a = evaluate(state, t, 0, {dx: 0, dy: 0, dvx: 0, dvy: 0});
+    var a = evaluate(state, t, 0, {dx: 0, dy: 0, dz: 0, dvx: 0, dvy: 0, dvz: 0});
     var b = evaluate(state, t, dt*.5, a);
     var c = evaluate(state, t, dt*.5, b);
     var d = evaluate(state, t, dt, c);
 
     var dxdt = 1/6 * (a.dx + 2*(b.dx + c.dx) + d.dx);
     var dydt = 1/6 * (a.dy + 2*(b.dy + c.dy) + d.dy);
+    var dzdt = 1/6 * (a.dz + 2*(b.dz + c.dz) + d.dz);
     var dvxdt = 1/6 * (a.dvx + 2*(b.dvx + c.dvx) + d.dvx);
     var dvydt = 1/6 * (a.dvy + 2*(b.dvy + c.dvy) + d.dvy);
+    var dvzdt = 1/6 * (a.dvz + 2*(b.dvz + c.dvz) + d.dvz);
 
     return {
         x: state.x + dxdt * dt,
         y: state.y + dydt * dt,
+        z: state.z + dzdt * dt,
         vx: state.vx + dvxdt * dt,
-        vy: state.vy + dvydt * dt
+        vy: state.vy + dvydt * dt,
+        vz: state.vz + dvzdt * dt
     }
 }
 
 function move(ball)
 {
-    var next = integrate(ball, 0, 1);
+    var next = integrate(ball, 0, 1);  
 
     ball.x = next.x;
     ball.y = next.y;
+    ball.z = next.z;
     ball.vx = next.vx;
     ball.vy = next.vy;
+    ball.vz = next.vz;
 }
 
 function step() {
@@ -148,8 +164,10 @@ io.sockets.on('connection', function(socket) {
         id: socket.id,
         x: 0,
         y: 0,
+        z: world.BALL_RADIUS,
         vx: 0,
         vy: 0,
+        vz: 0,
         keyDown: {
             right: false,
             left: false,
