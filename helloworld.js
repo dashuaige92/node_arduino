@@ -56,8 +56,8 @@ board.on('ready', function() {
 
     greenButton.on('up', function() {
         console.log("Green button pressed!");
-    })
+    });
     whiteButton.on('up', function() {
         console.log("White button pressed!");
-    })
-})
+    });
+});
