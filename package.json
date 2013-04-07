@@ -1,9 +1,8 @@
 {
-  "version": "0.0.1-1",
+  "version": "0.0.1-2",
   "dependencies": {
     "socket.io": "*",
-    "express": "3.x",
-    "johnny-five": "*"
+    "express": "3.x"
   },
   "subdomain": "pawns",
   "scripts": {

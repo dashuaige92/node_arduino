@@ -166,7 +166,6 @@ io.sockets.on('connection', function(socket) {
     })
 
     socket.on('keydown', function(data) {
-        console.log(socket.id + ' key down!');
         players[socket.id].keyDown[data.key] = true;
     });
     socket.on('keyup', function(data) {
@@ -181,5 +180,3 @@ io.sockets.on('connection', function(socket) {
         }
     })
 });
-
-
