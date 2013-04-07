@@ -11,6 +11,8 @@ var world = {
     HOLE_RADIUS: 5
 };
 
+var spheres = {};
+
 function init(name) {
     socket = io.connect(general.HOST_URI, general.CONN_OPTIONS);
 
@@ -19,7 +21,16 @@ function init(name) {
     });
 
     socket.on('step', function(data) {
-        console.log(data[socket.socket.sessionid]);
+        for (var key in data) {
+            var s = spheres[key.id];
+            if (s !== undefined) {
+                s.position.x = data[key].x;
+                s.position.y = data[key].y;
+            }
+            else {
+                spheres[key.id] = addSphere(data[key].x, data[key].y);
+            }
+        }
     })
 
     socket.on('disconnect', function() {
@@ -29,6 +40,7 @@ function init(name) {
 
 $(document).ready(function() {
     init();
+    animate(0);
 
     $(document).keydown(onKeyDown);
     $(document).keyup(onKeyUp);

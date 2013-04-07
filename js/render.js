@@ -50,7 +50,7 @@ var camera = new THREE.PerspectiveCamera(  VIEW_ANGLE,
 var scene = new THREE.Scene();
 var group = new THREE.Object3D();
 
-function init() {
+function renderInit() {
 	// the camera starts at 0,0,0 so pull it back
 	camera.position.y = -450;
 	camera.position.z = 400;
@@ -119,11 +119,7 @@ function rotatePlane(angle_x, angle_y) {
 	group.rotation.y = angle_y;
 }
 
-init();
-
-for (var i = 0; i < 10; i++) {
-	addSphere(Math.random() * 200 - 100, Math.random() * 200 - 100);
-}
+renderInit();
 
 // draw!
 renderer.render(scene, camera);

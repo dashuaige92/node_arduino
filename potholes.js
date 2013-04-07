@@ -38,7 +38,7 @@ app.get('/', function(req, res) {
 var sids = new Array();
 var players = {};
 var world = {
-    TIME_STEP: 50,
+    TIME_STEP: 16,
     WORLD_W: 300,
     WORLD_H: 300,
     TILT_X: 0,
@@ -142,6 +142,7 @@ setInterval(step, world.TIME_STEP);
 io.sockets.on('connection', function(socket) {
     console.log(socket.id + ' connected!');
     players[socket.id] = {
+        id: socket.id,
         x: 0,
         y: 0,
         vx: 0,
@@ -156,6 +157,7 @@ io.sockets.on('connection', function(socket) {
     sids.push(socket.id);
 
     socket.on('keydown', function(data) {
+        console.log(socket.id + ' key down!');
         players[socket.id].keyDown[data.key] = true;
     });
     socket.on('keyup', function(data) {
