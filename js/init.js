@@ -1,5 +1,5 @@
 var general = {
-    HOST_URI: 'http://localhost:8080/',
+    HOST_URI: document.location.hostname === 'localhost' ? 'http://localhost:8080' : 'http://pawns.jit.su',
     CONN_OPTIONS: {'transports':['websocket']},
     FRAME_INTERVAL: 16
 }
