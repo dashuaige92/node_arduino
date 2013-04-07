@@ -3,13 +3,9 @@ var general = {
     CONN_OPTIONS: {'transports':['websocket']},
     FRAME_INTERVAL: 16
 }
+var world;
 
-var world = {
-    WORLD_H: 300,
-    WORLD_W: 300,
-    BALL_RADIUS: 5,
-    HOLE_RADIUS: 5
-};
+var spheres = {};
 
 function init(name) {
     socket = io.connect(general.HOST_URI, general.CONN_OPTIONS);
@@ -18,9 +14,22 @@ function init(name) {
         console.log('Connected!');
     });
 
-    socket.on('message', function(data) {
-        data = JSON.parse(data);
-        $('.message')[0].innerHTML = data.analog;
+    socket.on('step', function(data) {
+        for (var key in data) {
+            var s = spheres[key.id];
+            if (s !== undefined) {
+                s.position.x = data[key].x;
+                s.position.y = data[key].y;
+            }
+            else {
+                spheres[key.id] = addSphere(data[key].x, data[key].y);
+            }
+        }
+    });
+
+    socket.on('world', function(data) {
+        world = data;
+        rotatePlane(world.TILT_Y, world.TILT_X);
     })
 
     socket.on('disconnect', function() {
@@ -30,6 +39,7 @@ function init(name) {
 
 $(document).ready(function() {
     init();
+    animate(0);
 
     $(document).keydown(onKeyDown);
     $(document).keyup(onKeyUp);
