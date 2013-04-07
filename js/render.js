@@ -118,12 +118,3 @@ function rotatePlane(angle_x, angle_y) {
 	group.rotation.x = angle_x;
 	group.rotation.y = angle_y;
 }
-
-init();
-
-for (var i = 0; i < 10; i++) {
-	addSphere(Math.random() * 200 - 100, Math.random() * 200 - 100);
-}
-
-// draw!
-renderer.render(scene, camera);
