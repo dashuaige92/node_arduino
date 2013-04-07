@@ -1,3 +1,31 @@
+window.requestAnimFrame = (function(callback){
+        return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback){
+            window.setTimeout(callback, 1000 / 60);
+        };
+    })();
+
+function animate(lastTime){
+    // update
+    var date = new Date();
+    var time = date.getTime();
+    var timeDiff = time - lastTime; //TODO: we could use timediff
+    
+    lastTime = time;
+
+    // render
+    renderer.render(scene, camera);
+
+    // request new frame
+    requestAnimFrame(function(){
+        animate(lastTime);
+    });
+}
+
 // set the scene size
 var WIDTH = 1200,
     HEIGHT = 800;
@@ -20,71 +48,82 @@ var camera = new THREE.PerspectiveCamera(  VIEW_ANGLE,
                                 NEAR,
                                 FAR  );
 var scene = new THREE.Scene();
-
-// the camera starts at 0,0,0 so pull it back
-camera.position.y = -450;
-camera.position.z = 400;
-camera.rotation.x = 45 * (Math.PI / 180);
-
-// start the renderer
-renderer.setSize(WIDTH, HEIGHT);
-
-var angle_x = 0;
-var angle_y = Math.PI/10;
-
-
-// attach the render-supplied DOM element
-$container.append(renderer.domElement);
-
 var group = new THREE.Object3D();
-scene.add(group);
 
-// plane
-var plane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({
-    color: 0xcccccc
-}));
-plane.overdraw = true;
+function init() {
+	// the camera starts at 0,0,0 so pull it back
+	camera.position.y = -450;
+	camera.position.z = 400;
+	camera.rotation.x = 45 * (Math.PI / 180);
 
-group.add(plane);
+	// start the renderer
+	renderer.setSize(WIDTH, HEIGHT);
 
-// create the sphere's material
-var sphereMaterial = new THREE.MeshLambertMaterial(
-{
-    color: 0xFF0000
-});
+	// attach the render-supplied DOM element
+	$container.append(renderer.domElement);
 
-// set up the sphere vars
-var radius = 20, segments = 16, rings = 16;
+	scene.add(group);
 
-// create a new mesh with sphere geometry -
-// we will cover the sphereMaterial next!
-var sphere = new THREE.Mesh(
-   new THREE.SphereGeometry(radius, segments, rings),
-   sphereMaterial);
+	// plane
+	var plane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({
+	    color: 0xcccccc
+	}));
+	plane.overdraw = true;
 
-//sphere.position.x = -100;
-//sphere.position.y = 0;
-sphere.position.z = 10;
+	// group
+	group.add(plane);
 
-// add the sphere to the scene
-group.add(sphere);
+	// and the camera
+	scene.add(camera);
 
-group.rotation.x += angle_x;
-group.rotation.y += angle_y;
+	// create a point light
+	var pointLight = new THREE.PointLight(0xFFFFFF, 1, 1000000);
 
-// and the camera
-scene.add(camera);
+	// set its position
+	pointLight.position.x = 0;
+	pointLight.position.y = 0;
+	pointLight.position.z = 200;
 
-// create a point light
-var pointLight = new THREE.PointLight( 0xFFFFFF );
+	// add to the scene
+	scene.add(pointLight);
+}
 
-// set its position
-pointLight.position.x = 10;
-pointLight.position.y = 50;
-pointLight.position.z = 130;
+function addSphere(x, y) {
+	// create the sphere's material
+	var sphereMaterial = new THREE.MeshLambertMaterial(
+	{
+	    color: 0xFF0000
+	});
 
-// add to the scene
-scene.add(pointLight);
+	// set up the sphere vars
+	var radius = 20, segments = 16, rings = 16;
+
+	// create a new mesh with sphere geometry -
+	// we will cover the sphereMaterial next!
+	var sphere = new THREE.Mesh(
+	   new THREE.SphereGeometry(radius, segments, rings),
+	   sphereMaterial);
+
+	sphere.position.x = x;
+	sphere.position.y = y;
+	sphere.position.z = 10;
+
+	// add the sphere to the scene
+	group.add(sphere);
+
+	return sphere;
+}
+
+function rotatePlane(angle_x, angle_y) {
+	group.rotation.x = angle_x;
+	group.rotation.y = angle_y;
+}
+
+init();
+
+for (var i = 0; i < 10; i++) {
+	addSphere(Math.random() * 200 - 100, Math.random() * 200 - 100);
+}
 
 // draw!
 renderer.render(scene, camera);
