@@ -171,8 +171,11 @@ function step() {
         if (players[key].alive)
             reset = false;
     }
-    if (reset)
+    if (reset) {
+        io.sockets.emit('reset');
         resetWorld();
+    }
+
     io.sockets.emit('step', players);
 }
 

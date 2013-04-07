@@ -14,6 +14,17 @@ function init(name) {
         console.log('Connected!');
     });
 
+    socket.on('reset', function() {
+        plane.material.color.setHex(0xFFFFFF);
+        renderer.render(scene, camera);
+        console.log('reset');
+
+        setTimeout(function() {
+            plane.material.color.setHex(0xbbbbbb);
+            renderer.render(scene, camera);
+        }, 100);
+    });
+
     socket.on('step', function(data) {
         for (var key in data) {
             if (spheres[data[key].id] !== undefined) {

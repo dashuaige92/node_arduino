@@ -49,6 +49,7 @@ var camera = new THREE.PerspectiveCamera(  VIEW_ANGLE,
                                 FAR  );
 var scene = new THREE.Scene();
 var group = new THREE.Object3D();
+var plane;
 
 function renderInit() {
 	// the camera starts at 0,0,0 so pull it back
@@ -66,7 +67,7 @@ function renderInit() {
 	scene.add(group);
 
 	// plane
-	var plane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({
+	plane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({
 	    color: 0xbbbbbb
 	}));
 	plane.overdraw = true;
