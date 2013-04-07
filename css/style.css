@@ -30,3 +30,8 @@ html, body {
 	left: 1%;
 	bottom: 0%;
 }
+
+a, a:link, a:visited, a:hover {
+	text-decoration: none;
+	color: black;
+}
