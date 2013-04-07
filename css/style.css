@@ -4,6 +4,7 @@ html, body {
 	overflow: hidden;
 	margin: 0px;
 	padding: 0px;
+	background-color: #f8f8f8;
 }
 
 #container {
@@ -11,4 +12,10 @@ html, body {
     width: 1200px;
     height: 800px;
     margin: auto;
+}
+
+#title {
+	font-family: Sanchez, serif;
+	margin-top: 16pt;
+	font-size: 44pt;
 }

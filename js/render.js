@@ -58,6 +58,7 @@ function renderInit() {
 
 	// start the renderer
 	renderer.setSize(WIDTH, HEIGHT);
+	renderer.setClearColorHex(0xf8f8f8, 1);
 
 	// attach the render-supplied DOM element
 	$container.append(renderer.domElement);
@@ -66,7 +67,7 @@ function renderInit() {
 
 	// plane
 	var plane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({
-	    color: 0xcccccc
+	    color: 0xbbbbbb
 	}));
 	plane.overdraw = true;
 
