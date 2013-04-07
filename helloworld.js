@@ -40,6 +40,7 @@ io.sockets.on('connection', function(socket) {
 var board = new five.Board();
 
 board.on('ready', function() {
+    var self = this;
     console.log('Connected to arduino!');
     var joystick = new five.Joystick({
         pins: ['A0', 'A1'],
@@ -47,11 +48,18 @@ board.on('ready', function() {
     });
     var greenButton = new five.Button(12);
     var whiteButton = new five.Button(13);
-    //this.digitalWrite(8, 1);
+    var joystickButton = new five.Button(7);
+    var rumble = 9;
 
     joystick.on('axismove', function( err, timestamp ) {
         console.log( "LR:", this.fixed.x );
         console.log( "UD:", this.fixed.y );
+    });
+    joystickButton.on('up', function() {
+        self.firmata.digitalWrite(rumble, self.firmata.HIGH);
+    });
+    joystickButton.on('down', function() {
+        self.firmata.digitalWrite(rumble, self.firmata.LOW);
     });
 
     greenButton.on('up', function() {
