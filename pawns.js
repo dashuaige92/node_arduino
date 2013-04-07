@@ -53,6 +53,14 @@ var physics = {
     restitution: 0.6
 };
 
+function resetWorld() {
+    for (var key in players) {
+        players[key].alive = true;
+        players[key].x = 0;
+        players[key].y = 0;
+    }
+}
+
 function acceleration(state, t) {
     // should actually be a force, but there is no mass
     var ax = 0, ay = 0, az = 0;
@@ -162,6 +170,7 @@ io.sockets.on('connection', function(socket) {
     console.log(socket.id + ' connected!');
     players[socket.id] = {
         id: socket.id,
+        alive: false,
         x: 0,
         y: 0,
         z: world.BALL_RADIUS,
@@ -181,7 +190,10 @@ io.sockets.on('connection', function(socket) {
         world.TILT_X = (data.x - .5) / 2;
         world.TILT_Y = (data.y - .5) / 2;
         io.sockets.emit('world', world);
-    })
+    });
+    socket.on('reset', function() {
+        resetWorld();
+    });
 
     socket.on('keydown', function(data) {
         players[socket.id].keyDown[data.key] = true;
