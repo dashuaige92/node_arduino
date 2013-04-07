@@ -16,13 +16,18 @@ function init(name) {
 
     socket.on('step', function(data) {
         for (var key in data) {
-            var s = spheres[key.id];
-            if (s !== undefined) {
-                s.position.x = data[key].x;
-                s.position.y = data[key].y;
+            if (spheres[data[key].id] !== undefined) {
+                spheres[data[key].id].position.x = data[key].x;
+                spheres[data[key].id].position.y = data[key].y;
             }
             else {
-                spheres[key.id] = addSphere(data[key].x, data[key].y);
+                spheres[data[key].id] = addSphere(data[key].x, data[key].y);
+            }
+        }
+        for (var key in spheres) {
+            if (data[key] === undefined) {
+                group.remove(spheres[key]);
+                delete spheres[key];
             }
         }
     });
