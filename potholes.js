@@ -183,7 +183,7 @@ board.on('ready', function() {
     console.log('Connected to arduino!');
     var joystick = new five.Joystick({
         pins: ['A0', 'A1'],
-        freq: 100
+        freq: 50
     });
     var greenButton = new five.Button(12);
     var whiteButton = new five.Button(13);
@@ -193,6 +193,7 @@ board.on('ready', function() {
     joystick.on('axismove', function( err, timestamp ) {
         world.TILT_X = (this.fixed.x - .5) / 2;
         world.TILT_Y = (this.fixed.y - .5) / 2;
+        io.sockets.emit('world', world);
     });
     joystickButton.on('up', function() {
         self.firmata.digitalWrite(rumble, self.firmata.HIGH);

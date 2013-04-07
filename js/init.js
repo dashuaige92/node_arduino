@@ -3,13 +3,7 @@ var general = {
     CONN_OPTIONS: {'transports':['websocket']},
     FRAME_INTERVAL: 16
 }
-
-var world = {
-    WORLD_H: 300,
-    WORLD_W: 300,
-    BALL_RADIUS: 5,
-    HOLE_RADIUS: 5
-};
+var world;
 
 var spheres = {};
 
@@ -31,6 +25,11 @@ function init(name) {
                 spheres[key.id] = addSphere(data[key].x, data[key].y);
             }
         }
+    });
+
+    socket.on('world', function(data) {
+        world = data;
+        rotatePlane(world.TILT_Y, world.TILT_X);
     })
 
     socket.on('disconnect', function() {
