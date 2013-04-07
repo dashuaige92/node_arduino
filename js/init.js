@@ -14,6 +14,15 @@ function init(name) {
         console.log('Connected!');
     });
 
+    socket.on('effecton', function() {
+        plane.material.color.setHex(0xf8f8f8);
+        renderer.render(scene, camera);
+    });
+    socket.on('effectoff', function() {
+        plane.material.color.setHex(0xbbbbbb);
+        renderer.render(scene, camera);
+    });
+
     socket.on('reset', function() {
         plane.material.color.setHex(0xFFFFFF);
         renderer.render(scene, camera);

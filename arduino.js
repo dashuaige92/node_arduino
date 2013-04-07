@@ -35,6 +35,10 @@ board.on('ready', function() {
     });
     whiteButton.on('up', function() {
         console.log("White button pressed!");
+        socket.emit('effecton');
+    });
+    whiteButton.on('down', function() {
+        socket.emit('effectoff');
     });
 
     socket.on('death', function() {

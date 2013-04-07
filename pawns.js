@@ -294,6 +294,13 @@ io.sockets.on('connection', function(socket) {
         }
     };
 
+    socket.on('effecton', function() {
+        io.sockets.emit('effecton');
+    });
+    socket.on('effectoff', function() {
+        io.sockets.emit('effectoff');
+    });
+
     socket.on('tilt', function(data) {
         delete players[socket.id];
         world.TILT_X = data.x - .5;
