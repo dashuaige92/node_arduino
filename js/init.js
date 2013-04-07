@@ -18,9 +18,8 @@ function init(name) {
         console.log('Connected!');
     });
 
-    socket.on('message', function(data) {
-        data = JSON.parse(data);
-        $('.message')[0].innerHTML = data.analog;
+    socket.on('step', function(data) {
+        console.log(data[socket.socket.sessionid]);
     })
 
     socket.on('disconnect', function() {

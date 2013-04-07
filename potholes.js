@@ -55,26 +55,27 @@ var physics = {
 function acceleration(state, t) {
     // should actually be a force, but there is no mass
     var ax = 0, ay = 0;
+    var control = state.keyDown;
 
-    if ( (control.rightDown ? !control.leftDown : control.leftDown) && 
-        (control.upDown ? !control.downDown : control.downDown)) {
+    if ( (control.right ? !control.left : control.left) && 
+        (control.up ? !control.down : control.down)) {
         // Diagonal movement
 
-        var diagaccel = physics.accel * (1 / Math.sqrt(2));
-        if (control.rightDown) ax += diagaccel;
-        if (control.leftDown) ax -= diagaccel;
-        if (control.upDown) ay -= diagaccel;
-        if (control.downDown) ay += diagaccel;
+        var diagaccel = physics.acceleration * (1 / Math.sqrt(2));
+        if (control.right) ax += diagaccel;
+        if (control.left) ax -= diagaccel;
+        if (control.up) ay += diagaccel;
+        if (control.down) ay -= diagaccel;
     } else {
-        if (control.rightDown) ax += physics.accel;
-        if (control.leftDown) ax -= physics.accel;
-        if (control.upDown) ay -= physics.accel;
-        if (control.downDown) ay += physics.accel;
+        if (control.right) ax += physics.acceleration;
+        if (control.left) ax -= physics.acceleration;
+        if (control.up) ay += physics.acceleration;
+        if (control.down) ay -= physics.acceleration;
     }
 
     return {
-        vx: - Math.pow(world.BALL_RADIUS, .5) * physics.fric * state.vx + ax,
-        vy: - Math.pow(world.BALL_RADIUS, .5) * physics.fric * state.vy + ay
+        vx: - Math.pow(world.BALL_RADIUS, .5) * physics.friction * state.vx + ax,
+        vy: - Math.pow(world.BALL_RADIUS, .5) * physics.friction * state.vy + ay
     };
 }
 
@@ -83,7 +84,8 @@ function evaluate(initial, t, dt, d) {
         x: initial.x + d.dx * dt,
         y: initial.y + d.dy * dt,
         vx: initial.vx + d.dvx * dt,
-        vy: initial.vy + d.dvy * dt
+        vy: initial.vy + d.dvy * dt,
+        keyDown: initial.keyDown
     };
 
     var a = acceleration(state, t + dt);
@@ -117,14 +119,7 @@ function integrate(state, t, dt) {
 
 function move(ball)
 {
-    var curr = {
-        x: ball.x,
-        y: ball.y,
-        vx: ball.vx,
-        vy: ball.vy
-    };
-
-    var next = integrate(curr, 0, 1);
+    var next = integrate(ball, 0, 1);
 
     ball.x = next.x;
     ball.y = next.y;
@@ -158,6 +153,7 @@ io.sockets.on('connection', function(socket) {
             down: false,
         }
     };
+    sids.push(socket.id);
 
     socket.on('keydown', function(data) {
         players[socket.id].keyDown[data.key] = true;
@@ -167,6 +163,11 @@ io.sockets.on('connection', function(socket) {
     });
     socket.on('disconnect', function() {
         console.log(socket.id + ' disconnected!');
+        var id = sids.indexOf(socket.id);
+        if (id != -1) {
+            sids.splice(sids.indexOf(id),1);
+            delete players[socket.id];
+        }
     })
 });
 
