@@ -3,7 +3,7 @@ var five = require('johnny-five');
 var client = require("socket.io-client", {
     reconnect: true
 });
-var socket = client.connect("http://pawns.jit.su");
+var socket = client.connect("http://localhost:8080");
 
 
 /* ARDUINO INPUT HANDLERS */
@@ -15,7 +15,7 @@ board.on('ready', function() {
     console.log('Connected to arduino!');
     var joystick = new five.Joystick({
         pins: ['A0', 'A1'],
-        freq: 50
+        freq: 10
     });
     var greenButton = new five.Button(12);
     var whiteButton = new five.Button(13);

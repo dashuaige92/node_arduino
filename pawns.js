@@ -63,6 +63,7 @@ function resetWorld() {
         players[key].vy = 0;
         players[key].vz = 0;
     }
+    io.sockets.emit('reset');
 }
 
 function acceleration(state, t) {
@@ -176,7 +177,6 @@ function step() {
             reset = false;
     }
     if (reset) {
-        io.sockets.emit('reset');
         resetWorld();
     }
 
