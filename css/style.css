@@ -1,5 +1,12 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
 #container {
     background: #FFF;
     width: 1200px;
     height: 800px;
+    margin: auto;
 }
