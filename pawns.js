@@ -34,7 +34,6 @@ app.get('/', function(req, res) {
 
 /* WORLD SIMULATION */
 
-var sids = new Array();
 var players = {};
 var world = {
     TIME_STEP: 16,
@@ -193,7 +192,6 @@ io.sockets.on('connection', function(socket) {
             down: false,
         }
     };
-    sids.push(socket.id);
 
     socket.on('tilt', function(data) {
         delete players[socket.id];
@@ -214,10 +212,6 @@ io.sockets.on('connection', function(socket) {
     });
     socket.on('disconnect', function() {
         console.log(socket.id + ' disconnected!');
-        var id = sids.indexOf(socket.id);
-        if (id != -1) {
-            sids.splice(sids.indexOf(id),1);
-            delete players[socket.id];
-        }
+        delete players[socket.id];
     })
 });
