@@ -29,21 +29,23 @@ camera.rotation.x = 45 * (Math.PI / 180);
 // start the renderer
 renderer.setSize(WIDTH, HEIGHT);
 
-var angle_y = Math.PI/10;
 var angle_x = 0;
+var angle_y = Math.PI/10;
+
 
 // attach the render-supplied DOM element
 $container.append(renderer.domElement);
+
+var group = new THREE.Object3D();
+scene.add(group);
 
 // plane
 var plane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({
     color: 0xcccccc
 }));
 plane.overdraw = true;
-plane.rotation.x = angle_x;
-plane.rotation.y = angle_y;
 
-scene.add(plane);
+group.add(plane);
 
 // create the sphere's material
 var sphereMaterial = new THREE.MeshLambertMaterial(
@@ -60,13 +62,15 @@ var sphere = new THREE.Mesh(
    new THREE.SphereGeometry(radius, segments, rings),
    sphereMaterial);
 
-sphere.position.x = -20;
-sphere.position.y = 0;
-sphere.position.z = 10 + sphere.position.x * Math.sin(angle_x) + 
-						sphere.position.y * Math.sin(angle_y);
+//sphere.position.x = -100;
+//sphere.position.y = 0;
+sphere.position.z = 10;
 
 // add the sphere to the scene
-scene.add(sphere);
+group.add(sphere);
+
+group.rotation.x += angle_x;
+group.rotation.y += angle_y;
 
 // and the camera
 scene.add(camera);
