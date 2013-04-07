@@ -146,6 +146,7 @@ setInterval(step, world.TIME_STEP);
 
 io.sockets.on('connection', function(socket) {
     socket.on('connect', function() {
+        console.log(socket.id + ' connected!');
         players[socket.id] = {
             x: 0,
             y: 0,
@@ -161,9 +162,11 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('keydown', function(data) {
+        console.log(socket.id + ' pressed key ' + data.key);
         players[socket.id].keyDown[data.key] = true;
     });
     socket.on('keyup', function(data) {
+        console.log(socket.id + ' released key ' + data.key);
         players[socket.id].keyDown[data.key] = false;
     });
     socket.on('disconnect', function() {

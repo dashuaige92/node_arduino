@@ -1,14 +1,14 @@
 var general = {
     HOST_URI: 'http://localhost:8080/',
-    CONN_OPTIONS: {'transports':['websocket']}
-    FRAME_INTERVAL: 16,
+    CONN_OPTIONS: {'transports':['websocket']},
+    FRAME_INTERVAL: 16
 }
 
 var world = {
     WORLD_H: 300,
     WORLD_W: 300,
     BALL_RADIUS: 5,
-    HOLE_RADIUS: 5,
+    HOLE_RADIUS: 5
 };
 
 function init(name) {
